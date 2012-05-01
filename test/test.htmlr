@@ -1,0 +1,27 @@
+function start () {
+  $(function () {
+    var x = new Panel('#test')
+      .add_north('#n', 20)
+      .add_east('#n2', 30)
+    ;
+    console.log(x); 
+  })      
+}
+
+doctype()
+.html({lang: "en"},
+  head(
+    meta({charset: "utf-8"}),
+    title("panel test"),
+    css('test.css'),
+    javascript('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
+    javascript('panel.js'),
+    javascript(start)
+  ),
+  body(
+    h1("panel test"),
+    div({id: "test"},
+      div({id: "n"})
+    )
+  )
+)

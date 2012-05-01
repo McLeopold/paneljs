@@ -1,0 +1,18 @@
+body {
+	background-color: #333;
+}
+
+#test {
+	background-color: #999;
+	width: 100px;
+	height: 100px;
+	/* position: relative; */
+}
+
+#n {
+	background-color: #339;
+}
+
+#n2 {
+	background-color: #933;
+}
