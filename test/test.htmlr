@@ -3,6 +3,7 @@ function start () {
     var x = new Panel('#test')
       .add_north('#n', 20)
       .add_east('#n2', 30)
+      .add('#text')
     ;
     console.log(x); 
   })      
@@ -15,13 +16,21 @@ doctype()
     title("panel test"),
     css('test.css'),
     javascript('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
-    javascript('panel.js'),
+    javascript('../panel.js'),
     javascript(start)
   ),
   body(
     h1("panel test"),
+    div({id: "fake"},
+      div({id: "n"},
+        div({class: "inside"}, '')
+      )
+    ),
     div({id: "test"},
-      div({id: "n"})
+      div({id: "n2"},
+        div({class: "inside"}, '')
+      ),
+      pre({id: "text"}, "this\nstuff\nrocks")
     )
   )
 )
