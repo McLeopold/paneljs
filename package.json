@@ -1,0 +1,7 @@
+{
+  "name": "paneljs",
+  "version": "0.0.1",
+  "dependencies": {
+    "htmlr": ">=0.0.1"
+  }
+}
