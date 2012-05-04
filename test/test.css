@@ -1,11 +1,13 @@
 body {
 	background-color: #fff;
 	color: #eee;
+	margin: 0px;
+	padding:; 0px;
 }
 
 #test_a {
 	background-color: #eee;
-	width: 400px;
+	width: 300px;
 	height: 100px;
 	margin: 10px;
 	float: right;
@@ -13,7 +15,7 @@ body {
 
 #test_b {
 	background-color: #eee;
-	width: 400px;
+	width: 300px;
 	height: 100px;
 	margin: 10px;
 	position: relative;
@@ -21,10 +23,29 @@ body {
 
 #test_c {
 	background-color: #eee;
-	width: 400px;
+	width: 300px;
 	height: 100px;
 	margin: 10px;
 	position: relative;
+}
+
+#test_d {
+	background-color: #ddd;
+	border: solid 1px #ccc;
+	position: relative;
+	width: 100px;
+	height: 100px;
+	margin: 10px;
+}
+
+#div_d {
+	background-color: #ded;
+	border: solid 1px #cfc;
+	height: 50px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
 }
 
 #div_b {
@@ -39,14 +60,17 @@ body {
 
 #div_c_2 {
 	background-color: #ede;
+	border: solid 3px #999;
 }
 
 .inside {
+	/*
 	position: absolute;
 	top: 0px;
 	bottom: 0px;
 	left: 0px;
 	right: 0px;
+	*/
 	border: dotted 0px #888;
 }
 

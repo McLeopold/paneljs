@@ -103,131 +103,133 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
 
   var attached = false;
   var bg = splitter.style.backgroundColor;
-  var pointer = document.createElement('div');
-  pointer.style.position = 'absolute';
-  pointer.style.top = '0px';
-  pointer.style.left = '0px';
-  pointer.style.backgroundColor = 'black';
-  pointer.style.width = '13px';
-  pointer.style.height = '13px';
   var mouse_x;
   var mouse_y;
   var height;
   var width;
   var that = this;
-  document.body.appendChild(pointer);
+  var mouse = options && options.mouse || 1;
+
   var on_mouse_down = function (evt) {
     mouse_x = evt.x;
     mouse_y = evt.y;
     height = that.height;
     width = that.width;
-    console.log('mouse down');
-    if (!attached) {
-      that.element.addEventListener('mousemove', on_mouse_drag);
-      that.element.addEventListener('mouseup', on_mouse_up);
-      splitter.style.backgroundColor = 'red';
-      attached = true;
-    }
+    start_split_move();
   };
   var on_mouse_drag = function (evt) {
-    that.height = height + evt.y - mouse_y;
-    that.width = width + evt.x - mouse_x;
+    that.height = Math.min(that.max_height, Math.max(1, height + mouse * (evt.y - mouse_y)));
+    that.width = Math.min(that.max_width, Math.max(1, width + mouse * (evt.x - mouse_x)));
     that.resize();
-    //pointer.style.top = evt.y+'px';
-    //pointer.style.left = evt.x+'px';
   };
   var on_mouse_up = function (evt) {
-    console.log('mouse up');
-    on_mouse_out();
+    stop_split_move();
   };
   var on_mouse_out = function (evt) {
-    console.log('mouse out ' + evt.target.id + ':' + evt.relatedTarget.id);
-    console.log(panel_a.id, panel_b.id, splitter.id);
-    if (evt.relatedTarget === panel_a
-        || evt.relatedTarget === panel_b
-        || evt.relatedTarget === splitter) {
-      console.log('cancel');
-      return;
+    evt = evt || window.event;
+    var from = evt.realtedTarget || evt.toElement;
+    if (!from || from.nodeName === 'HTML') {
+      stop_split_move();
     }
-    console.log('detach');
+  }
+  var start_split_move = function () {
+    if (!attached) {
+      document.body.addEventListener('mousemove', on_mouse_drag);
+      document.body.addEventListener('mouseup', on_mouse_up);
+      splitter.style.backgroundColor = 'red';
+      document.body.style.webkitUserSelect = 'none';
+      attached = true;
+    }
+  }
+  var stop_split_move = function () {
     if (attached) {
-      that.element.removeEventListener('mousemove', on_mouse_drag);
-      that.element.removeEventListener('mouseup', on_mouse_up);
+      document.body.removeEventListener('mousemove', on_mouse_drag);
+      document.body.removeEventListener('mouseup', on_mouse_up);
       splitter.style.backgroundColor = bg;
+      document.body.style.webkitUserSelect = 'text';
       attached = false;
     }
   }
-  var on_mouse_over = function (evt) {
-    //console.log('mouse over' + evt.target.id + ':' + evt.relatedTarget.id);
-  }
   splitter.addEventListener('mousedown', on_mouse_down);
-  this.element.addEventListener('mouseout', on_mouse_out, true);
-  this.element.addEventListener('mouseover', on_mouse_over, true);
+  document.addEventListener('mouseout', on_mouse_out);
   this.splitter = splitter;
 }
 
-Panel.prototype.add_dock = function (child) {
+Panel.prototype.add_dock = function (child, mouse) {
   child = Panel.get_element(child);
   this.children.push(child);
   var panel = document.createElement('div');
   panel.id = "panel_" + ++Panel.ids;
   panel.className = "panel";
   Panel.move_children(this.element, panel);
-  this.split(child, panel);
+  this.split(child, panel, {mouse: mouse});
   return new Panel(panel, this);
 }
 
 Panel.prototype.add_north = function (child, height) {
-  this.panel = this.panel.add_dock(child);
-  this.height = height;
-  this.resize = this.resize_north;
-  this.resize();
+  var panel = this.panel;
+  this.panel = panel.add_dock(child, 1);
+  panel.height = height;
+  panel.resize = panel.resize_north;
+  panel.resize();
   //this.panel.parent.resize_north(height);
   return this;
 }
 
 Panel.prototype.add_south = function (child, height) {
-  this.panel = this.panel.add_dock(child);
-  this.height = height;
-  this.resize = this.resize_south;
-  this.resize();
+  var panel = this.panel;
+  this.panel = this.panel.add_dock(child, -1);
+  panel.height = height;
+  panel.resize = panel.resize_south;
+  panel.resize();
   //this.panel.parent.resize_south(height);
   return this;
 }
 
 Panel.prototype.add_east = function (child, width) {
-  this.panel = this.panel.add_dock(child);
-  this.width = width;
-  this.resize = this.resize_east;
-  this.resize();
+  var panel = this.panel;
+  this.panel = panel.add_dock(child, 1);
+  panel.width = width;
+  panel.resize = panel.resize_east;
+  panel.resize();
   //this.panel.parent.resize_east(width);
   return this;
 }
 
 Panel.prototype.add_west = function (child, width) {
-  this.panel = this.panel.add_dock(child);
-  this.width = width;
-  this.resize = this.resize_west;
-  this.resize();
+  var panel = this.panel;
+  this.panel = panel.add_dock(child, -1);
+  panel.width = width;
+  panel.resize = panel.resize_west;
+  panel.resize();
   //this.panel.parent.resize_west(width);
   return this;
 }
 
 Panel.prototype.resize_north = function (height) {
   if (this.panel_a && this.splitter && this.panel_b) {
-    height = height || this.height || this.element.offsetHeight / 2;
+    if (this.max_height === undefined) {
+      this.max_height = this.element.offsetHeight - Panel.frame_width;
+    }
+    if (height === undefined) {
+      if (this.height === undefined) {
+        height = Math.floor(this.max_height / 2);
+      } else {
+        height = this.height;
+      }
+    }
     this.height = height;
-    var a_border = this.panel_a.offsetHeight - this.panel_a.scrollHeight
-      , b_border = this.panel_b.offsetHeight - this.panel_b.scrollHeight
-      , s_border = this.splitter.offsetHeight - this.splitter.scrollHeight
-    ;
+
+    var border = this.panel_a.offsetHeight - this.panel_a.scrollHeight;
     this.panel_a.style.position = 'absolute';
+    this.panel_a.style.overflow = 'auto';
     this.panel_a.style.top = '0px';
-    this.panel_a.style.height = height-a_border+'px';
+    this.panel_a.style.height = height-border+'px';
     this.panel_a.style.left = '0px';
     this.panel_a.style.right = '0px';
 
     this.panel_b.style.position = 'absolute';
+    this.panel_b.style.overflow = 'auto';
     this.panel_b.style.top = height+Panel.frame_width+'px';
     this.panel_b.style.bottom = '0px';
     this.panel_b.style.left = '0px';
@@ -245,22 +247,35 @@ Panel.prototype.resize_north = function (height) {
 
 Panel.prototype.resize_south = function (height) {
   if (this.panel_a && this.splitter && this.panel_b) {
-    height = height || this.height || this.element.offsetHeight / 2;
+    if (this.max_height === undefined) {
+      this.max_height = this.element.offsetHeight - Panel.frame_width;
+    }
+    if (height === undefined) {
+      if (this.height === undefined) {
+        height = Math.floor(this.max_height / 2);
+      } else {
+        height = this.height;
+      }
+    }
     this.height = height;
+
+    var border = this.panel_a.offsetHeight - this.panel_a.scrollHeight;
     this.panel_a.style.position = 'absolute';
+    this.panel_a.style.overflow = 'auto';
+    this.panel_a.style.height = height-border+'px';
     this.panel_a.style.bottom = '0px';
-    this.panel_a.style.height = height+'px';
     this.panel_a.style.left = '0px';
     this.panel_a.style.right = '0px';
 
     this.panel_b.style.position = 'absolute';
+    this.panel_b.style.overflow = 'auto';
     this.panel_b.style.bottom = height+Panel.frame_width+'px';
     this.panel_b.style.top = '0px';
     this.panel_b.style.left = '0px';
     this.panel_b.style.right = '0px';
 
     this.splitter.style.position = 'absolute';
-    this.splitter.style.bottom = height + Panel.frame_width+'px';
+    this.splitter.style.bottom = height+'px';
     this.splitter.style.height = Panel.frame_width+'px';
     this.splitter.style.left = '0px';
     this.splitter.style.right = '0px';    
@@ -271,15 +286,28 @@ Panel.prototype.resize_south = function (height) {
 
 Panel.prototype.resize_east = function (width) {
   if (this.panel_a && this.splitter && this.panel_b) {
-    width = width || this.width || this.element.offsetWidth / 2;
+    if (this.max_width === undefined) {
+      this.max_width = this.element.offsetWidth - Panel.frame_width;
+    }
+    if (width === undefined) {
+      if (this.width === undefined) {
+        width = Math.floor(this.max_width / 2);
+      } else {
+        width = this.width;
+      }
+    }
     this.width = width;
+
+    var border = this.panel_a.offsetWidth - this.panel_a.scrollWidth;
     this.panel_a.style.position = 'absolute';
+    this.panel_a.style.overflow = 'auto';
     this.panel_a.style.left = '0px';
-    this.panel_a.style.width = width+'px';
+    this.panel_a.style.width = width-border+'px';
     this.panel_a.style.top = '0px';
     this.panel_a.style.bottom = '0px';
 
     this.panel_b.style.position = 'absolute';
+    this.panel_b.style.overflow = 'auto';
     this.panel_b.style.left = width+Panel.frame_width+'px';
     this.panel_b.style.right = '0px';
     this.panel_b.style.top = '0px';
@@ -297,22 +325,35 @@ Panel.prototype.resize_east = function (width) {
 
 Panel.prototype.resize_west = function (width) {
   if (this.panel_a && this.splitter && this.panel_b) {
-    width = width || this.width || this.element.offsetWidth / 2;
+    if (this.max_width === undefined) {
+      this.max_width = this.element.offsetWidth - Panel.frame_width;
+    }
+    if (width === undefined) {
+      if (this.width === undefined) {
+        width = Math.floor(this.max_width / 2);
+      } else {
+        width = this.width;
+      }
+    }
     this.width = width;
+
+    var border = this.panel_a.offsetWidth - this.panel_a.scrollWidth;
     this.panel_a.style.position = 'absolute';
+    this.panel_a.style.overflow = 'auto';
     this.panel_a.style.right = '0px';
-    this.panel_a.style.width = width+'px';
+    this.panel_a.style.width = width-border+'px';
     this.panel_a.style.top = '0px';
     this.panel_a.style.bottom = '0px';
 
     this.panel_b.style.position = 'absolute';
+    this.panel_b.style.overflow = 'auto';
     this.panel_b.style.right = width+Panel.frame_width+'px';
     this.panel_b.style.left = '0px';
     this.panel_b.style.top = '0px';
     this.panel_b.style.bottom = '0px';
 
     this.splitter.style.position = 'absolute';
-    this.splitter.style.right = width + Panel.frame_width+'px';
+    this.splitter.style.right = width+'px';
     this.splitter.style.width = Panel.frame_width+'px';
     this.splitter.style.top = '0px';
     this.splitter.style.bottom = '0px';    
