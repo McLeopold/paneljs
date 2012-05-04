@@ -31,21 +31,10 @@ body {
 
 #test_d {
 	background-color: #ddd;
-	border: solid 1px #ccc;
+	border: solid 1px red;
 	position: relative;
-	width: 100px;
-	height: 100px;
-	margin: 10px;
-}
-
-#div_d {
-	background-color: #ded;
-	border: solid 1px #cfc;
-	height: 50px;
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
+	width: 400px;
+	height: 400px;
 }
 
 #div_b {
@@ -64,13 +53,6 @@ body {
 }
 
 .inside {
-	/*
-	position: absolute;
-	top: 0px;
-	bottom: 0px;
-	left: 0px;
-	right: 0px;
-	*/
 	border: dotted 0px #888;
 }
 
@@ -79,5 +61,5 @@ body {
 }
 pre {
 	margin: 0px;
-	background-color: #ddd;
+	background-color: #777;
 }

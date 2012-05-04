@@ -206,6 +206,22 @@ Panel.prototype.add_west = function (child, width) {
   return this;
 }
 
+Panel.prototype.fill = function () {
+  this.element.style.position = 'absolute';
+  this.element.style.width = 'auto';
+  this.element.style.height = 'auto';
+  this.element.style.top = '0px';
+  this.element.style.bottom = '0px';
+  this.element.style.left = '0px';
+  this.element.style.right = '0px';
+  return this;
+}
+
+Panel.prototype.adopt = function (el_from) {
+  Panel.move_siblings(this.element, this.panel.element);
+  return this;
+}
+
 Panel.prototype.resize_north = function (height) {
   if (this.panel_a && this.splitter && this.panel_b) {
     if (this.max_height === undefined) {

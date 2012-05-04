@@ -11,7 +11,15 @@ function start () {
       .add_west('#div_c_2')
     ;
     console.log('test_c', test_c);
-  })      
+    var test_d = new Panel('#test_d')
+      .add_north('#div_d_n', 100)
+      .add_south('#div_d_s', 100)
+      .add_east('#div_d_e', 100)
+      .add_west('#div_d_w', 100)
+      .fill()
+      .adopt();
+    ;
+  })
 }
 
 doctype()
@@ -41,8 +49,6 @@ doctype()
       div({id: "div_c_2", class: "inside"},''),
       pre({id: "pre_c", class: "inside"}, "this\nstuff\nrocks")
     ),
-    div({id: "test_d"},
-      div({id: "div_d"}, '')
-    )
+    div({id: "test_d"},'')
   )
 )
