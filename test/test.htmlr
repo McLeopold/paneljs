@@ -1,11 +1,16 @@
 function start () {
   $(function () {
-    var x = new Panel('#test')
-      .add_north('#n', 20)
-      .add_east('#n2', 30)
-      .add('#text')
+    var test_a = new Panel('#test_a');
+    console.log('test_a', test_a);
+    var test_b = new Panel('#test_b')
+      .add_north('#div_b');
     ;
-    console.log(x); 
+    console.log('test_b', test_b);
+    var test_c = new Panel('#test_c')
+      .add_north('#div_c_1')
+      //.add_east('#div_c_2')
+    ;
+    console.log('test_c', test_c);
   })      
 }
 
@@ -21,16 +26,20 @@ doctype()
   ),
   body(
     h1("panel test"),
-    div({id: "fake"},
-      div({id: "n"},
-        div({class: "inside"}, '')
-      )
+
+    div({id: "test_a"},
+      pre({id: "pre_a", class: "inside"}, "this\nstuff\nrocks")
     ),
-    div({id: "test"},
-      div({id: "n2"},
-        div({class: "inside"}, '')
-      ),
-      pre({id: "text"}, "this\nstuff\nrocks")
+
+    div({id: "test_b"},
+      div({id: "div_b", class: "inside"},''),
+      pre({id: "pre_b", class: "inside"}, "this\nstuff\nrocks")
+    ),
+
+    div({id: "test_c"},
+      div({id: "div_c_1", class: "inside"},''),
+      div({id: "div_c_2", class: "inside"},''),
+      pre({id: "pre_c", class: "inside"}, "this\nstuff\nrocks")
     )
   )
 )

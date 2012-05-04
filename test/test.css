@@ -1,26 +1,44 @@
 body {
-	background-color: #333;
+	background-color: #fff;
+	color: #eee;
 }
 
-#fake {
-	float: right;
-	background-color: #555;
-	width: 100px;
+#test_a {
+	background-color: #eee;
+	width: 400px;
 	height: 100px;
+	margin: 10px;
+	float: right;
 }
 
-#test {
-	background-color: #999;
-	width: 500px;
-	height: 200px;
+#test_b {
+	background-color: #eee;
+	width: 400px;
+	height: 100px;
+	margin: 10px;
+	position: relative;
 }
 
-#n {
-	background-color: #339;
+#test_c {
+	background-color: #eee;
+	width: 400px;
+	height: 100px;
+	margin: 10px;
+	position: relative;
 }
 
-#n2 {
-	background-color: #933;
+#div_b {
+	background-color: #eed;
+	border: solid 3px #999;
+}
+
+#div_c_1 {
+	background-color: #dee;
+	border: solid 3px #999;
+}
+
+#div_c_2 {
+	background-color: #ede;
 }
 
 .inside {
@@ -29,10 +47,13 @@ body {
 	bottom: 0px;
 	left: 0px;
 	right: 0px;
-	border: dotted 2px black;
+	border: dotted 0px #888;
 }
 
+.splitter {
+	background-color: #cfc;
+}
 pre {
 	margin: 0px;
-	background-color: white;
+	background-color: #ddd;
 }
