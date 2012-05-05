@@ -59,6 +59,23 @@ body {
 .splitter {
 	background-color: #cfc;
 }
+
+.collapser {
+	background-color: #8c8;
+	position: absolute;
+	height: 6px;
+	width: 6px;
+	top: 50%;
+	left: 50%;
+	margin-top: -3px;
+	margin-left: -3px;
+	cursor: pointer;
+}
+
+.collapser:hover {
+	background-color: red;
+}
+
 pre {
 	margin: 0px;
 	background-color: #777;

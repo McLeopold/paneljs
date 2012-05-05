@@ -3,7 +3,7 @@ function start () {
     var test_a = new Panel('#test_a');
     console.log('test_a', test_a);
     var test_b = new Panel('#test_b')
-      .add_south('#div_b');
+      .add_north('#div_b');
     ;
     console.log('test_b', test_b);
     var test_c = new Panel('#test_c')

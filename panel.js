@@ -1,3 +1,5 @@
+function TabPanel(selector)
+
 function Panel(selector, parent, options) {
   var option;
 
@@ -101,6 +103,11 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
   this.element.appendChild(splitter);
   Panel.move_child(panel_b, this.element, true);
 
+  var collapser = document.createElement('div');
+  collapser.id = "collapser_" + ++Panel.ids;
+  collapser.className = "collapser";
+  splitter.appendChild(collapser);
+
   var attached = false;
   var bg = splitter.style.backgroundColor;
   var mouse_x;
@@ -109,13 +116,18 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
   var width;
   var that = this;
   var mouse = options && options.mouse || 1;
+  var collapsed = false;
+  var collapse_height = this.height;
+  var collapse_width = this.width;
 
   var on_mouse_down = function (evt) {
-    mouse_x = evt.x;
-    mouse_y = evt.y;
-    height = that.height;
-    width = that.width;
-    start_split_move();
+    if (evt.target !== collapser) {
+      mouse_x = evt.x;
+      mouse_y = evt.y;
+      height = that.height;
+      width = that.width;
+      start_split_move();
+    }
   };
   var on_mouse_drag = function (evt) {
     that.height = Math.min(that.max_height, Math.max(1, height + mouse * (evt.y - mouse_y)));
@@ -132,6 +144,22 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
       stop_split_move();
     }
   }
+  var on_mouse_click = function (evt) {
+    console.log(collapse_height, collapse_width);
+    if (collapsed) {
+      that.height = collapse_height;
+      that.width = collapse_width;
+      that.resize();
+      collapsed = false
+    } else {
+      collapse_height = that.height;
+      collapse_width = that.width;
+      that.height = 0;
+      that.width = 0;
+      that.resize();
+      collapsed = true;
+    }
+  }
   var start_split_move = function () {
     if (!attached) {
       document.body.addEventListener('mousemove', on_mouse_drag);
@@ -142,6 +170,15 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
     }
   }
   var stop_split_move = function () {
+    if (that.height === 0 || that.width === 0) {
+      if (!collapsed) {
+        collapsed = true;
+      }
+    } else {
+      if (collapsed) {
+        collapsed = false;
+      }
+    }
     if (attached) {
       document.body.removeEventListener('mousemove', on_mouse_drag);
       document.body.removeEventListener('mouseup', on_mouse_up);
@@ -152,7 +189,9 @@ Panel.prototype.split = function (panel_a, panel_b, options) {
   }
   splitter.addEventListener('mousedown', on_mouse_down);
   document.addEventListener('mouseout', on_mouse_out);
+  collapser.addEventListener('click', on_mouse_click);
   this.splitter = splitter;
+  this.collapser = collapser;
 }
 
 Panel.prototype.add_dock = function (child, mouse) {
@@ -255,8 +294,10 @@ Panel.prototype.resize_north = function (height) {
     this.splitter.style.top = height+'px';
     this.splitter.style.height = Panel.frame_width+'px';
     this.splitter.style.left = '0px';
-    this.splitter.style.right = '0px';    
+    this.splitter.style.right = '0px';
+
     this.splitter.style.cursor = "ns-resize";
+    this.collapser.style.cursor = "auto";
   }
   return this;
 }
@@ -294,8 +335,10 @@ Panel.prototype.resize_south = function (height) {
     this.splitter.style.bottom = height+'px';
     this.splitter.style.height = Panel.frame_width+'px';
     this.splitter.style.left = '0px';
-    this.splitter.style.right = '0px';    
+    this.splitter.style.right = '0px';
+
     this.splitter.style.cursor = "ns-resize";
+    this.collapser.style.cursor = "auto";    
   }
   return this;
 }
@@ -333,8 +376,10 @@ Panel.prototype.resize_east = function (width) {
     this.splitter.style.left = width+'px';
     this.splitter.style.width = Panel.frame_width+'px';
     this.splitter.style.top = '0px';
-    this.splitter.style.bottom = '0px';    
+    this.splitter.style.bottom = '0px';
+
     this.splitter.style.cursor = "ew-resize";
+    this.collapser.style.cursor = "auto";
   }
   return this;
 }
@@ -372,8 +417,10 @@ Panel.prototype.resize_west = function (width) {
     this.splitter.style.right = width+'px';
     this.splitter.style.width = Panel.frame_width+'px';
     this.splitter.style.top = '0px';
-    this.splitter.style.bottom = '0px';    
+    this.splitter.style.bottom = '0px';
+
     this.splitter.style.cursor = "ew-resize";
+    this.collapser.style.cursor = "auto";
   }
   return this;
 }
