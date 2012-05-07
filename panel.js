@@ -1,4 +1,5 @@
-function TabPanel(selector)
+function TabPanel(selector) {
+}
 
 function Panel(selector, parent, options) {
   var option;
