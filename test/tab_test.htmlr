@@ -1,0 +1,36 @@
+function start () {
+  $(function () {
+    var tab = new TabPanel('#')
+}
+
+doctype()
+.html({lang: "en"},
+  head(
+    meta({charset: "utf-8"}),
+    title("tab panel test"),
+    css('test.css'),
+    javascript('http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js'),
+    javascript('../panel.js'),
+    javascript(start)
+  ),
+  body(
+    h1("tab panel test"),
+
+    
+    div({id: "tab_a"},
+      pre({id: "pre_a", class: "inside"}, "this\nstuff\nrocks")
+    ),
+
+    div({id: "tab_b"},
+      div({id: "div_b", class: "inside"},''),
+      pre({id: "pre_b", class: "inside"}, "this\nstuff\nrocks")
+    ),
+
+    div({id: "tab_c"},
+      div({id: "div_c_1", class: "inside"},''),
+      div({id: "div_c_2", class: "inside"},''),
+      pre({id: "pre_c", class: "inside"}, "this\nstuff\nrocks")
+    ),
+    div({id: "tab_d"},'')
+  )
+)

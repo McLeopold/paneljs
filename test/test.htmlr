@@ -33,7 +33,7 @@ doctype()
     javascript(start)
   ),
   body(
-    h1("panel test"),
+    h1("panel test!"),
 
     div({id: "test_a"},
       pre({id: "pre_a", class: "inside"}, "this\nstuff\nrocks")
