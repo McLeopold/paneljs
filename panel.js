@@ -1,5 +1,4 @@
 function TabPanel(selector) {
-  
 }
 
 function Panel(selector, parent, options) {
